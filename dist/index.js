@@ -177,9 +177,12 @@ async function getRoomById(roomId) {
   const result = await db.select().from(rooms).where(eq(rooms.id, roomId)).limit(1);
   return result.length > 0 ? result[0] : void 0;
 }
-async function addPlayerToRoom(roomId, userId) {
+async function addPlayerToRoom(roomId, userId, playerName) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  if (playerName) {
+    await db.update(users).set({ name: playerName }).where(eq(users.id, userId));
+  }
   return await db.insert(roomMembers).values({
     roomId,
     userId
@@ -700,7 +703,7 @@ var appRouter = router({
       if (!ctx.user) throw new TRPCError3({ code: "UNAUTHORIZED" });
       const room = await getRoomByCode(input.code);
       if (!room) throw new TRPCError3({ code: "NOT_FOUND" });
-      await addPlayerToRoom(room.id, ctx.user.id);
+      await addPlayerToRoom(room.id, ctx.user.id, input.playerName);
       return room;
     }),
     getMembers: protectedProcedure.input(z2.object({ roomId: z2.number() })).query(async ({ input }) => {
@@ -816,6 +819,8 @@ async function createContext(opts) {
       const existingUser = await dbInstance.select().from(users).where(eq3(users.id, 1)).limit(1);
       if (existingUser.length === 0) {
         await dbInstance.insert(users).values(user);
+      } else {
+        user.name = existingUser[0].name;
       }
     }
   } catch (error) {

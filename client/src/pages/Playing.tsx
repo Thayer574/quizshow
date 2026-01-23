@@ -368,11 +368,7 @@ export default function Playing() {
                       </span>
                       <div>
                         <p className="font-black tracking-tight flex items-center gap-2">
-<<<<<<< HEAD
-                          {member.name}
-=======
                           {member.name || "Challenger"}
->>>>>>> origin/update
                           {index === 0 && (
                             <Crown className="w-4 h-4 fill-current" />
                           )}
