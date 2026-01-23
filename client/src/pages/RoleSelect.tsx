@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Gamepad2, LogOut, Loader2 } from "lucide-react";
+import { Users, Gamepad2, LogOut, Loader2, User } from "lucide-react";
 
 export default function RoleSelect() {
   const { user, logout } = useAuth();
@@ -13,11 +13,11 @@ export default function RoleSelect() {
 
   const handleLogout = async () => {
     await logout();
-    setLocation("/");
+    window.location.href = "/";
   };
 
   // Provide a default user if useAuth is still loading/missing
-  const displayUser = user || { name: "Player" };
+  const displayUser = user || { name: "GUEST" };
 
   const handleSelectRole = (role: "owner" | "player") => {
     selectRole(role);
@@ -30,6 +30,16 @@ export default function RoleSelect() {
 
   return (
     <div className="min-h-screen bg-[#46178f] flex items-center justify-center p-4">
+      {/* Username display in top left */}
+      <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/20">
+        <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+          <User className="w-4 h-4 text-white" />
+        </div>
+        <span className="text-white font-bold tracking-tight">
+          {displayUser.name}
+        </span>
+      </div>
+
       <div className="w-full max-w-4xl">
         {/* Header */}
         <div className="text-center mb-12">

@@ -23,7 +23,6 @@ function Router() {
     <Switch>
       {/* Auth & Role Selection */}
       <Route path={"/"} component={Login} />
-      <Route path={"/username-selection"} component={UsernameSelection} />
       <Route path={"/role-select"} component={RoleSelect} />
       
       {/* Room Owner Routes */}

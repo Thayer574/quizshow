@@ -5,10 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnswerButton } from "@/components/AnswerButton";
 import { trpc } from "@/lib/trpc";
-import { Loader2, Users, Zap, Timer, Trophy, Star, ArrowRight, AlertCircle, Sparkles, Crown } from "lucide-react";
+import {
+  Loader2,
+  Users,
+  Zap,
+  Timer,
+  Trophy,
+  Star,
+  ArrowRight,
+  AlertCircle,
+  Sparkles,
+  Crown,
+} from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { QUESTION_TIME_LIMIT, POINTS_PER_CORRECT, MAX_SPEED_BONUS } from "@shared/gameConstants";
+import {
+  QUESTION_TIME_LIMIT,
+  POINTS_PER_CORRECT,
+  MAX_SPEED_BONUS,
+} from "@shared/gameConstants";
 
 export default function Playing() {
   const { code } = useParams();
@@ -29,21 +44,21 @@ export default function Playing() {
       toast.success("NEW CHALLENGE UNLOCKED!", {
         icon: <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />,
       });
-    }
+    },
   });
 
   // Fetch room and questions
   const roomQuery = trpc.room.getByCode.useQuery(
     { code: code || "" },
-    { refetchInterval: 2000 }
+    { refetchInterval: 2000 },
   );
   const questionsQuery = trpc.question.getRoomQuestions.useQuery(
     { roomId: roomQuery.data?.id || 0 },
-    { enabled: !!roomQuery.data?.id }
+    { enabled: !!roomQuery.data?.id },
   );
   const membersQuery = trpc.room.getMembers.useQuery(
     { roomId: roomQuery.data?.id || 0 },
-    { enabled: !!roomQuery.data?.id }
+    { enabled: !!roomQuery.data?.id },
   );
 
   const questions = questionsQuery.data || [];
@@ -95,7 +110,8 @@ export default function Playing() {
     if (user) {
       const isCorrect = answer === currentQuestion.correctAnswer;
       const pointsEarned = isCorrect
-        ? POINTS_PER_CORRECT + Math.floor((timeLeft / QUESTION_TIME_LIMIT) * MAX_SPEED_BONUS)
+        ? POINTS_PER_CORRECT +
+          Math.floor((timeLeft / QUESTION_TIME_LIMIT) * MAX_SPEED_BONUS)
         : 0;
 
       recordAnswerMutation.mutate({
@@ -128,10 +144,15 @@ export default function Playing() {
   if (roomQuery.isLoading || questionsQuery.isLoading) {
     return (
       <div className="min-h-screen bg-[#46178f] flex flex-col items-center justify-center space-y-6">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        >
           <Loader2 className="w-16 h-16 text-yellow-400" />
         </motion.div>
-        <p className="text-white font-black tracking-widest animate-pulse">SYNCING ARENA...</p>
+        <p className="text-white font-black tracking-widest animate-pulse">
+          SYNCING ARENA...
+        </p>
       </div>
     );
   }
@@ -141,8 +162,15 @@ export default function Playing() {
       <div className="min-h-screen bg-[#46178f] flex items-center justify-center p-6">
         <Card className="bg-white/10 backdrop-blur-xl border-2 border-red-500/50 rounded-[2rem] p-10 text-center">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-6" />
-          <p className="text-3xl font-black text-white italic">CHALLENGE NOT FOUND</p>
-          <Button onClick={() => setLocation("/")} className="mt-6 bg-white text-[#46178f] font-black rounded-xl">BACK TO BASE</Button>
+          <p className="text-3xl font-black text-white italic">
+            CHALLENGE NOT FOUND
+          </p>
+          <Button
+            onClick={() => setLocation("/")}
+            className="mt-6 bg-white text-[#46178f] font-black rounded-xl"
+          >
+            BACK TO BASE
+          </Button>
         </Card>
       </div>
     );
@@ -153,14 +181,13 @@ export default function Playing() {
 
   return (
     <div className="min-h-screen bg-[#46178f] text-white font-sans selection:bg-yellow-400 selection:text-[#46178f] overflow-hidden relative">
-
       {/* Background FX */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/40 to-transparent" />
-        <motion.div 
+        <motion.div
           animate={{ opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 5, repeat: Infinity }}
-          className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" 
+          className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"
         />
       </div>
 
@@ -169,17 +196,24 @@ export default function Playing() {
         <div className="flex justify-between items-end mb-8">
           <div className="space-y-2">
             <h1 className="text-4xl font-black italic tracking-tighter flex items-center gap-2">
-              K-QUIZ <Sparkles className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+              K-QUIZ{" "}
+              <Sparkles className="w-6 h-6 text-yellow-400 fill-yellow-400" />
             </h1>
             <div className="flex items-center gap-4">
               <div className="bg-black/20 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
-                <p className="text-[10px] font-black uppercase tracking-widest text-purple-300">Arena Code</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-purple-300">
+                  Arena Code
+                </p>
                 <p className="text-lg font-black text-yellow-400">{code}</p>
               </div>
               <div className="h-12 w-px bg-white/10" />
               <div className="bg-black/20 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
-                <p className="text-[10px] font-black uppercase tracking-widest text-purple-300">Question</p>
-                <p className="text-lg font-black">{currentQuestionIndex + 1} / {questions.length}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-purple-300">
+                  Question
+                </p>
+                <p className="text-lg font-black">
+                  {currentQuestionIndex + 1} / {questions.length}
+                </p>
               </div>
             </div>
           </div>
@@ -187,17 +221,22 @@ export default function Playing() {
           <div className="flex items-center gap-6">
             <div className="text-right hidden md:block">
               <p className="text-[10px] font-black uppercase tracking-widest text-purple-300 flex items-center gap-2 justify-end">
-                <Users className="w-3 h-3" /> {membersQuery.data?.length || 0} Challengers
+                <Users className="w-3 h-3" /> {membersQuery.data?.length || 0}{" "}
+                Challengers
               </p>
             </div>
-            <motion.div 
+            <motion.div
               key={timeLeft}
               initial={{ scale: 1.2, color: "#fff" }}
               animate={{ scale: 1, color: timeLeft <= 5 ? "#ef4444" : "#fff" }}
               className="bg-black/40 backdrop-blur-xl w-24 h-24 rounded-full border-4 border-white/20 flex flex-col items-center justify-center shadow-2xl"
             >
-              <Timer className={`w-5 h-5 mb-1 ${timeLeft <= 5 ? "animate-pulse" : ""}`} />
-              <span className="text-3xl font-black tracking-tighter">{timeLeft}</span>
+              <Timer
+                className={`w-5 h-5 mb-1 ${timeLeft <= 5 ? "animate-pulse" : ""}`}
+              />
+              <span className="text-3xl font-black tracking-tighter">
+                {timeLeft}
+              </span>
             </motion.div>
           </div>
         </div>
@@ -241,9 +280,18 @@ export default function Playing() {
                   "bg-[#26890c] shadow-[#1a5e08]", // Green
                 ];
                 const icons = [
-                  <div key="0" className="w-8 h-8 border-4 border-white rotate-45" />,
-                  <div key="1" className="w-8 h-8 border-4 border-white rounded-full" />,
-                  <div key="2" className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-bottom-[28px] border-bottom-white" />,
+                  <div
+                    key="0"
+                    className="w-8 h-8 border-4 border-white rotate-45"
+                  />,
+                  <div
+                    key="1"
+                    className="w-8 h-8 border-4 border-white rounded-full"
+                  />,
+                  <div
+                    key="2"
+                    className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-bottom-[28px] border-bottom-white"
+                  />,
                   <div key="3" className="w-8 h-8 border-4 border-white" />,
                 ];
 
@@ -263,7 +311,13 @@ export default function Playing() {
                       active:shadow-none active:translate-y-[8px]
                       disabled:cursor-default
                     `}
-                    style={{ "--tw-shadow-color": colors[index % 4].split(" ")[1].split("-")[1] } as any}
+                    style={
+                      {
+                        "--tw-shadow-color": colors[index % 4]
+                          .split(" ")[1]
+                          .split("-")[1],
+                      } as any
+                    }
                   >
                     <div className="flex-shrink-0 mr-6 opacity-40 group-hover:opacity-100 transition-opacity">
                       {icons[index % 4]}
@@ -272,7 +326,7 @@ export default function Playing() {
                       {answer}
                     </span>
                     {isAnswered && answer === currentQuestion.correctAnswer && (
-                      <motion.div 
+                      <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         className="absolute -top-4 -right-4 bg-white text-green-600 p-2 rounded-full shadow-xl"
@@ -289,7 +343,9 @@ export default function Playing() {
           {/* Leaderboard Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center justify-between px-2">
-              <h2 className="text-sm font-black uppercase tracking-[0.3em] text-purple-300">Leaderboard</h2>
+              <h2 className="text-sm font-black uppercase tracking-[0.3em] text-purple-300">
+                Leaderboard
+              </h2>
               <Trophy className="w-5 h-5 text-yellow-400" />
             </div>
 
@@ -307,13 +363,21 @@ export default function Playing() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-black text-lg opacity-40">{index + 1}</span>
+                      <span className="font-black text-lg opacity-40">
+                        {index + 1}
+                      </span>
                       <div>
                         <p className="font-black tracking-tight flex items-center gap-2">
                           {member.name}
-                          {index === 0 && <Crown className="w-4 h-4 fill-current" />}
+                          {index === 0 && (
+                            <Crown className="w-4 h-4 fill-current" />
+                          )}
                         </p>
-                        {member.userId === user?.id && <p className="text-[10px] font-black uppercase tracking-widest opacity-60">You</p>}
+                        {member.userId === user?.id && (
+                          <p className="text-[10px] font-black uppercase tracking-widest opacity-60">
+                            You
+                          </p>
+                        )}
                       </div>
                     </div>
                     <p className="font-black text-xl italic">0</p>
@@ -346,7 +410,11 @@ export default function Playing() {
                   </div>
                   <div>
                     <h3 className="text-4xl font-black italic tracking-tighter">
-                      {isCorrect ? "LEGENDARY!" : selectedAnswer === null ? "TIME'S UP!" : "NOT QUITE!"}
+                      {isCorrect
+                        ? "LEGENDARY!"
+                        : selectedAnswer === null
+                          ? "TIME'S UP!"
+                          : "NOT QUITE!"}
                     </h3>
                     {isCorrect && (
                       <p className="text-xl font-bold text-green-100">
@@ -363,7 +431,9 @@ export default function Playing() {
                     onClick={handleNextQuestion}
                     className="bg-white text-black px-12 py-5 rounded-[2rem] font-black text-2xl shadow-[0_8px_0_0_#cbd5e1] active:shadow-none active:translate-y-[8px] transition-all flex items-center gap-3"
                   >
-                    {currentQuestionIndex === questions.length - 1 ? "FINAL STANDINGS" : "NEXT CHALLENGE"}
+                    {currentQuestionIndex === questions.length - 1
+                      ? "FINAL STANDINGS"
+                      : "NEXT CHALLENGE"}
                     <ArrowRight className="w-8 h-8" />
                   </motion.button>
                 )}

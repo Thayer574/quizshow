@@ -85,7 +85,7 @@ export const appRouter = router({
         const room = await getRoomByCode(input.code);
         if (!room) throw new TRPCError({ code: "NOT_FOUND" });
 
-        await addPlayerToRoom(room.id, ctx.user.id);
+        await addPlayerToRoom(room.id, ctx.user.id, input.playerName);
         return room;
       }),
 

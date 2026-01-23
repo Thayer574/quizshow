@@ -32,6 +32,9 @@ export async function createContext(
       const existingUser = await dbInstance.select().from(users).where(eq(users.id, 1)).limit(1);
       if (existingUser.length === 0) {
         await dbInstance.insert(users).values(user);
+      } else {
+        // Use the actual name from the database if it exists
+        user.name = existingUser[0].name;
       }
     }
   } catch (error) {

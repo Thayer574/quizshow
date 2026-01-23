@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,8 +11,9 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 export default function JoinRoom() {
+  const { user } = useAuth();
   const [code, setCode] = useState("");
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(user?.name || "");
   const [, setLocation] = useLocation();
 
   const joinRoomMutation = trpc.room.join.useMutation({

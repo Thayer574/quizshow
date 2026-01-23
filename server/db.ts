@@ -116,10 +116,14 @@ export async function getRoomById(roomId: number) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function addPlayerToRoom(roomId: number, userId: number) {
+export async function addPlayerToRoom(roomId: number, userId: number, playerName?: string) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
+  if (playerName) {
+    await db.update(users).set({ name: playerName }).where(eq(users.id, userId));
+  }
+
   return await db.insert(roomMembers).values({
     roomId,
     userId,
