@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Loader2, Copy, Check, Sparkles, Crown, Share2, ArrowRight, Zap } from "lucide-react";
+import { Loader2, Copy, Check, Sparkles, Share2, ArrowRight, Zap, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 

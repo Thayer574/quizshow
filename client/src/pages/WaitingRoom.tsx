@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
-import { Plus, Users, Loader2, Play, LogOut, Trash2, Sparkles, Brain, Zap, Star } from "lucide-react";
+import { Plus, Users, Loader2, Play, LogOut, Trash2, Sparkles, Brain, Zap, Star, Crown, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -55,7 +55,7 @@ export default function WaitingRoom() {
             </div>
             <div>
               <p className="text-xs font-black uppercase tracking-widest opacity-70">New Challenger!</p>
-              <p className="text-2xl font-black italic tracking-tighter">{newMember.name.toUpperCase()} HAS ENTERED!</p>
+              <p className="text-2xl font-black italic tracking-tighter">{(newMember.name || "SOMEONE").toUpperCase()} HAS ENTERED!</p>
             </div>
           </motion.div>
         ), { duration: 4000 });
@@ -125,6 +125,7 @@ export default function WaitingRoom() {
     return (
       <div className="min-h-screen bg-[#46178f] flex items-center justify-center p-6">
         <Card className="bg-white/10 backdrop-blur-xl border-2 border-red-500/50 rounded-[2rem] p-10 text-center">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-6" />
           <p className="text-3xl font-black text-white italic">ARENA NOT FOUND</p>
           <Button onClick={() => setLocation("/")} className="mt-6 bg-white text-[#46178f] font-black rounded-xl">BACK TO BASE</Button>
         </Card>
@@ -134,7 +135,7 @@ export default function WaitingRoom() {
 
   return (
     <div className="min-h-screen bg-[#46178f] text-white font-sans selection:bg-yellow-400 selection:text-[#46178f] relative overflow-hidden">
-
+      
       {/* Background FX */}
       <div className="fixed inset-0 pointer-events-none opacity-30">
         <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
@@ -196,14 +197,14 @@ export default function WaitingRoom() {
       {/* Main Content */}
       <main className="relative z-10 max-w-7xl mx-auto px-6 py-10">
         <div className="grid lg:grid-cols-12 gap-10">
-
+          
           {/* Players Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center justify-between px-2">
               <h2 className="text-sm font-black uppercase tracking-[0.3em] text-purple-300">Challengers</h2>
               <span className="bg-white/10 px-3 py-1 rounded-full text-xs font-black">{membersQuery.data?.length || 0}</span>
             </div>
-
+            
             <div className="grid grid-cols-1 gap-3">
               <AnimatePresence mode="popLayout">
                 {membersQuery.data?.map((member, idx) => (
@@ -216,10 +217,10 @@ export default function WaitingRoom() {
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-500 rounded-xl flex items-center justify-center font-black text-lg">
-                        {member.name[0].toUpperCase()}
+                        {(member.name || "P")[0].toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-black text-lg tracking-tight">{member.name}</p>
+                        <p className="font-black text-lg tracking-tight">{member.name || "Challenger"}</p>
                         <p className="text-[10px] font-bold text-purple-300 uppercase">Joined Arena</p>
                       </div>
                     </div>
@@ -254,96 +255,99 @@ export default function WaitingRoom() {
                     <div className="space-y-2">
                       <label className="text-xs font-black uppercase tracking-widest text-blue-100">The Question</label>
                       <Textarea
-                        placeholder="Type your question..."
-                        className="bg-white/10 border-2 border-white/20 focus:border-white/50 text-white text-xl font-bold rounded-2xl min-h-[100px]"
+                        placeholder="Type your mind-bending question here..."
+                        className="bg-white/10 border-2 border-white/20 focus:border-white/50 text-white placeholder:text-white/40 min-h-[120px] text-xl font-bold rounded-2xl resize-none"
                         value={questionForm.questionText}
                         onChange={(e) => setQuestionForm({ ...questionForm, questionText: e.target.value })}
                       />
                     </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        placeholder="Correct Answer"
-                        className="bg-[#26890c] border-none h-14 font-bold rounded-xl"
-                        value={questionForm.correctAnswer}
-                        onChange={(e) => setQuestionForm({ ...questionForm, correctAnswer: e.target.value })}
-                      />
-                      <Input
-                        placeholder="Wrong Answer 1"
-                        className="bg-[#e21b3c] border-none h-14 font-bold rounded-xl"
-                        value={questionForm.wrongAnswer1}
-                        onChange={(e) => setQuestionForm({ ...questionForm, wrongAnswer1: e.target.value })}
-                      />
-                      <Input
-                        placeholder="Wrong Answer 2"
-                        className="bg-[#d89e00] border-none h-14 font-bold rounded-xl"
-                        value={questionForm.wrongAnswer2}
-                        onChange={(e) => setQuestionForm({ ...questionForm, wrongAnswer2: e.target.value })}
-                      />
-                      <Input
-                        placeholder="Wrong Answer 3"
-                        className="bg-white/10 border-2 border-white/20 h-14 font-bold rounded-xl"
-                        value={questionForm.wrongAnswer3}
-                        onChange={(e) => setQuestionForm({ ...questionForm, wrongAnswer3: e.target.value })}
-                      />
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-green-300">Correct Answer</label>
+                        <Input
+                          placeholder="The right one!"
+                          className="bg-[#26890c] border-none text-white placeholder:text-white/60 h-14 text-lg font-bold rounded-xl"
+                          value={questionForm.correctAnswer}
+                          onChange={(e) => setQuestionForm({ ...questionForm, correctAnswer: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-red-300">Wrong Answer 1</label>
+                        <Input
+                          placeholder="Deceptive..."
+                          className="bg-[#e21b3c] border-none text-white placeholder:text-white/60 h-14 text-lg font-bold rounded-xl"
+                          value={questionForm.wrongAnswer1}
+                          onChange={(e) => setQuestionForm({ ...questionForm, wrongAnswer1: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-orange-300">Wrong Answer 2</label>
+                        <Input
+                          placeholder="Tricky..."
+                          className="bg-[#d89e00] border-none text-white placeholder:text-white/60 h-14 text-lg font-bold rounded-xl"
+                          value={questionForm.wrongAnswer2}
+                          onChange={(e) => setQuestionForm({ ...questionForm, wrongAnswer2: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-blue-300">Wrong Answer 3</label>
+                        <Input
+                          placeholder="Almost..."
+                          className="bg-[#1368ce] border-2 border-white/20 text-white placeholder:text-white/60 h-14 text-lg font-bold rounded-xl"
+                          value={questionForm.wrongAnswer3}
+                          onChange={(e) => setQuestionForm({ ...questionForm, wrongAnswer3: e.target.value })}
+                        />
+                      </div>
                     </div>
+
                     <button
                       onClick={handleAddQuestion}
                       disabled={addQuestionMutation.isPending}
-                      className="w-full bg-white text-[#1368ce] h-16 rounded-2xl font-black text-xl shadow-[0_6px_0_0_#cbd5e1] active:shadow-none active:translate-y-[6px] transition-all"
+                      className="w-full bg-white text-[#1368ce] p-6 rounded-2xl font-black text-2xl shadow-[0_6px_0_0_#cbd5e1] active:shadow-none active:translate-y-[6px] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                     >
-                      {addQuestionMutation.isPending ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : "ADD TO ARENA"}
+                      {addQuestionMutation.isPending ? <Loader2 className="w-8 h-8 animate-spin" /> : "FORGE QUESTION"}
                     </button>
                   </div>
                 </DialogContent>
               </Dialog>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
               <AnimatePresence mode="popLayout">
-                {questionsQuery.data?.map((question, index) => (
+                {questionsQuery.data?.map((q, idx) => (
                   <motion.div
-                    key={question.id}
+                    key={q.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white/5 border border-white/10 rounded-[2rem] p-6 hover:bg-white/10 transition-all group"
+                    transition={{ delay: idx * 0.05 }}
+                    className="bg-white/10 backdrop-blur-md border border-white/10 p-6 rounded-3xl flex items-center justify-between group hover:bg-white/20 transition-all"
                   >
-                    <div className="flex gap-6">
-                      <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center font-black text-xl text-yellow-400">
-                        {index + 1}
+                    <div className="flex items-center gap-6">
+                      <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center font-black text-xl text-purple-300">
+                        {idx + 1}
                       </div>
-                      <div className="flex-1 space-y-4">
-                        <p className="text-xl font-bold group-hover:text-yellow-400 transition-colors">{question.questionText}</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                          <div className="px-3 py-2 bg-[#26890c]/20 border border-[#26890c]/40 rounded-lg text-[#4ade80] text-[10px] font-black truncate uppercase">
-                            {question.correctAnswer}
-                          </div>
-                          {[question.wrongAnswer1, question.wrongAnswer2, question.wrongAnswer3].map((ans, i) => (
-                            <div key={i} className="px-3 py-2 bg-[#e21b3c]/10 border border-[#e21b3c]/20 rounded-lg text-[#f87171] text-[10px] font-black truncate uppercase">
-                              {ans}
-                            </div>
-                          ))}
+                      <div>
+                        <p className="font-bold text-lg leading-tight">{q.questionText}</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 bg-green-500/20 text-green-400 rounded">Correct: {q.correctAnswer}</span>
                         </div>
                       </div>
                     </div>
+                    <Zap className="w-5 h-5 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </motion.div>
                 ))}
               </AnimatePresence>
               {(!questionsQuery.data || questionsQuery.data.length === 0) && (
-                <div className="text-center py-20 bg-white/5 border-2 border-dashed border-white/10 rounded-[3rem]">
-                  <Zap className="w-12 h-12 text-purple-400 mx-auto mb-4 opacity-20" />
-                  <p className="font-black text-purple-300 uppercase tracking-widest">Arena is empty. Add questions!</p>
+                <div className="bg-white/5 border-2 border-dashed border-white/10 rounded-[2rem] py-20 text-center">
+                  <Brain className="w-12 h-12 text-white/20 mx-auto mb-4" />
+                  <p className="text-white/40 font-bold">The Challenge Bank is empty. Forge your first question!</p>
                 </div>
               )}
             </div>
           </div>
-
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="py-10 text-center opacity-20">
-        <p className="text-[10px] font-black tracking-[0.5em] uppercase">Arena Sync Active • v1.0.4</p>
-      </footer>
     </div>
   );
 }
